@@ -1,0 +1,10 @@
+
+INSTALL(
+    FILES ${CMAKE_CURRENT_SOURCE_DIR}/qs1r_firmware_03032011.hex ${CMAKE_CURRENT_SOURCE_DIR}/QS1R_WINRAD_04112011.rbf
+    DESTINATION share/libgnuradio-qs1r
+)
+
+INSTALL(
+    FILES ${CMAKE_CURRENT_SOURCE_DIR}/10-qs1r.rules
+    DESTINATION /etc/udev/rules.d
+)

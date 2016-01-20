@@ -1,0 +1,7 @@
+/*!
+ * \defgroup block GNU Radio QS1R C++ Signal Processing Blocks
+ * \brief All C++ blocks that can be used from the QS1R GNU Radio
+ *        module are listed here or in the subcategories below.
+ *
+ */
+

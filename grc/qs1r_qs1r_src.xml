@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<block>
+    <name>QS1R Source</name>
+    <key>qs1r_qs1r_src</key>
+    <category>Sources</category>
+    <throttle>1</throttle>
+    <import>import qs1r</import>
+    <make>qs1r.qs1r_src($frequency, $samplerate,
+            $pga_flag, $rand_flag, $dith_flag, $ppm)</make>
+    <param>
+        <name>Frequency (Hz)</name>
+        <key>frequency</key>
+        <value>10000000</value>
+        <type>int</type>
+    </param>
+    <param>
+        <name>Frequency corr. (ppm)</name>
+        <key>ppm</key>
+        <value>0</value>
+        <type>int</type>
+    </param>
+    <param>
+        <name>Samplerate (Hz)</name>
+        <key>samplerate</key>
+        <value>2500000</value>
+        <type>enum</type>
+        <option><name>25000</name><key>25000</key></option>
+        <option><name>50000</name><key>50000</key></option>
+        <option><name>125000</name><key>125000</key></option>
+        <option><name>250000</name><key>250000</key></option>
+        <option><name>500000</name><key>500000</key></option>
+        <option><name>625000</name><key>625000</key></option>
+        <option><name>1250000</name><key>1250000</key></option>
+        <option><name>1562500</name><key>1562500</key></option>
+        <option><name>2500000</name><key>2500000</key></option>
+    </param>
+    <param>
+        <name>PGA</name>
+        <key>pga_flag</key>
+        <value>True</value>
+        <type>enum</type>
+        <option><name>Yes</name><key>True</key></option>
+        <option><name>No</name><key>False</key></option>
+    </param>
+    <param>
+        <name>RAND</name>
+        <key>rand_flag</key>
+        <value>True</value>
+        <type>enum</type>
+        <option><name>Yes</name><key>True</key></option>
+        <option><name>No</name><key>False</key></option>
+    </param>
+    <param>
+        <name>DITH</name>
+        <key>dith_flag</key>
+        <value>False</value>
+        <type>enum</type>
+        <option><name>Yes</name><key>True</key></option>
+        <option><name>No</name><key>False</key></option>
+    </param>
+    <source>
+      <name>out</name>
+      <type>int</type>
+    </source>
+    <doc>
+This block wraps the QS1R USB Direct Sampling Receiver \
+into one convenient GNU Radio source block.
+
+PGA is ADC PGA Gain Select Set to 0 for low gain, set to 1 for high gain.
+RAND is ADC Randomizer Enable Set to 1 to enable ADC randomizer function.
+DITH is ADC Dither Enable Set to 1 to enable ADC dithering function.
+
+The sample rate is up to 2500 ksps. Bandwidth will be 80% \
+of setted samplerate.
+    </doc>
+</block>
