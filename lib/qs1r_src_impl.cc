@@ -62,6 +62,48 @@ find_file (const char *filename)
 static bool first = true;
 
 
+////////////////////
+#define HiBYTE(w) (uint8_t)((w >> 8) & 0x00ff)
+#define LoBYTE(w) (uint8_t)((w >> 0) & 0x00ff)
+#define CONST__GAINoff 0b10001000
+#define CONST__GAINon  0b10001001 // Weak Signal Booster ON
+#define CONST__LoBAND  0b00000001
+#define CONST__MiBAND  0b00000010
+#define CONST__HiBAND  0b00001100
+
+#define RCVPCH1 37300
+
+int KSH14xPLL(bool TunerGain, uint32_t FrcvWork)
+
+{
+  uint32_t fPCH1;
+  uint8_t buffer[4];
+
+  buffer[2] = (TunerGain)? CONST__GAINon:CONST__GAINoff;
+  buffer[3] = CONST__LoBAND;
+
+  if(FrcvWork > 155000L) buffer[3] = CONST__MiBAND;
+  if(FrcvWork > 440000L) buffer[3] = CONST__HiBAND;
+
+  fPCH1 = (uint16_t)((FrcvWork + RCVPCH1)/50);
+  buffer[0] = HiBYTE(fPCH1);
+  buffer[1] = LoBYTE(fPCH1);
+
+//  int count = writeI2C(0b11000000, buffer, 4);
+  int count = writeI2C(0b1100000, buffer, 4);
+  fprintf(stderr, "i2c write count: %d\n", count);
+//  I2CStart();
+//  I2COutByte(0b11000000);   // Tuner Address
+//  I2COutByte(HiBYTE(fPCH1));
+//  I2COutByte(LoBYTE(fPCH1));
+//  I2COutByte((TunerGain)? CONST__GAINon:CONST__GAINoff);
+//  I2COutByte(Band);
+//  I2CStop();
+    return (count == 4) ? 0 : -1 ;
+}
+
+
+
 namespace gr {
   namespace qs1r {
 
@@ -152,9 +194,21 @@ namespace gr {
 #endif
         writeMultibusInt(MB_SAMPLERATE, samplerate);
 
-        double LOfreq = (double)frequency;
-        int frequency_word = (int)((LOfreq) / ( 125e6 + (double)ppm ) * 4294967296.0);
-        writeMultibusInt(MB_FREQRX0_REG, frequency_word);
+        if(frequency > 60000000) {
+            //use KSH-148 tuner...
+            if(KSH14xPLL(false, frequency/1000) == -1) {
+                throw std::runtime_error("Could not set VHF/UHF tuner frequency!\n");
+            }
+
+            //tune receiver to 37.300MHz (center)
+            double LOfreq = RCVPCH1 * 1000.0f + (frequency % 1000);
+            int frequency_word = (int)((LOfreq) / ( 125e6 + (double)ppm ) * 4294967296.0);
+            writeMultibusInt(MB_FREQRX0_REG, frequency_word);
+        } else {
+            double LOfreq = (double)frequency;
+            int frequency_word = (int)((LOfreq) / ( 125e6 + (double)ppm ) * 4294967296.0);
+            writeMultibusInt(MB_FREQRX0_REG, frequency_word);
+        }
     }
 
     /*

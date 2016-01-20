@@ -24,11 +24,7 @@ Allowed samplerates in Hz:
 1562500
 2500000
 
-Actual bandwidth will be ~80% of the setted samplerate. The output format - is interleaved 32bit integer values of: QIQIQI...
+Actual bandwidth will be ~85% of the setted samplerate. The output format - is interleaved 32bit integer values of: QIQIQI...
 
 
-Usage examples:
-
-
-TODO:
- * Implement KSH-148 (KSH-146) downconverter interface by I2C.
+If frequency is more than 60 MHz, then additional tuner is used KSH-146(148).
